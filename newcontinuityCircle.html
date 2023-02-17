@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Expanding Circle</title>
+    <meta charset="UTF-8">
+    <style>
+      canvas {
+        background-color: black;
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="300" height="300"></canvas>
+    <script>
+      var canvas = document.getElementById("myCanvas");
+      var ctx = canvas.getContext("2d");
+      var centerX = canvas.width / 2;
+      var centerY = canvas.height / 2;
+      var radius = 50;
+      var maxRadius = Math.min(centerX, centerY);
+      var dashedLine = [5,5]; // The pattern for the dashed line
+      ctx.setLineDash([1,5]); // Set the dashed line pattern
+      var circles = [];
+
+      function drawCircle() {
+        if (radius < maxRadius) {
+          radius += 8;
+          var circle = { x: centerX, y: centerY, r: radius };
+          circles.push(circle);
+        } else {
+          circles.shift();
+          if (circles.length === 0) {
+            radius = 50;
+          }
+        }
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (var i = circles.length-1; i >= 0; i--) {
+          var circle = circles[i];
+          var alpha = (i + .1) / circles.length;
+          ctx.globalAlpha = alpha;
+          ctx.beginPath();
+          ctx.arc(circle.x, circle.y, circle.r, 0, 2 * Math.PI);
+          ctx.lineWidth = 7;
+          ctx.strokeStyle = "white";
+          ctx.stroke();
+
+          if (circle.r === maxRadius) {
+            var newCircle = { x: centerX, y: centerY, r: 0 };
+            circles.push(newCircle);
+            break;
+          }
+        }
+      }
+
+      setInterval(drawCircle, 150);
+    </script>
+  </body>
+</html>
